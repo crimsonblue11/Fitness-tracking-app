@@ -11,14 +11,13 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {LogItem.class}, version = 1, exportSchema = false)
+@Database(entities = {LogItem.class, LBRItem.class}, version = 4, exportSchema = false)
 public abstract class LogRoomDatabase extends RoomDatabase {
     public abstract LogDao logDao();
-
     private static volatile LogRoomDatabase instance;
 
     private static final int threadCount = 4;
-    static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(threadCount);
+    public static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(threadCount);
 
     public static LogRoomDatabase getDatabase(final Context context) {
         if (instance == null) {
@@ -41,13 +40,16 @@ public abstract class LogRoomDatabase extends RoomDatabase {
 
             databaseWriteExecutor.execute(() -> {
                 LogDao dao = instance.logDao();
-                dao.deleteAll();
+                dao.deleteAllLogs();
+                
+//                LogItem log1 = new LogItem(1701088069, 1701089809, LogType.WALK, new Location(), new Pair<>(0.0, 0.0));
+//                LogItem log2 = new LogItem(1700036400, 1700040600, LogType.RUN, new Pair<>(0.0, 0.0), new Pair<>(0.0, 0.0));
 
-                LogItem log1 = new LogItem(1701088069, 1701089809, LogType.WALK, 1.8f);
-                LogItem log2 = new LogItem(1700036400, 1700040600, LogType.RUN, 2.78f);
+//                dao.insert(log1);
+//                dao.insert(log2);
 
-                dao.insert(log1);
-                dao.insert(log2);
+                LBRItem lbr1 = new LBRItem("Test", 53.074330, -2.519859, 100f);
+                dao.insert(lbr1);
             });
         }
     };

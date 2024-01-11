@@ -5,9 +5,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,7 +18,6 @@ import com.example.mdp_cw2.R;
 import com.example.mdp_cw2.database.LogDao;
 import com.example.mdp_cw2.database.LogItem;
 import com.example.mdp_cw2.database.LogRoomDatabase;
-import com.example.mdp_cw2.database.LogType;
 import com.example.mdp_cw2.home.AppFragment;
 import com.example.mdp_cw2.home.FragmentManagerActivity;
 import com.example.mdp_cw2.home.LogItemViewAdapter;
@@ -35,7 +36,7 @@ public class RecentFragment extends AppFragment {
 
         FragmentManagerActivity activity = (FragmentManagerActivity) getActivity();
 
-        if(activity == null) {
+        if (activity == null) {
             Log.d("COMP3018", "Activity was null");
             return null;
         }
@@ -44,8 +45,8 @@ public class RecentFragment extends AppFragment {
         logDao = db.logDao();
 
         List<LogItem> sampleList = new ArrayList<>();
-        sampleList.add(new LogItem(1701088069, 1701089809, LogType.WALK, 1.8f));
-        sampleList.add(new LogItem(1700036400, 1700040600, LogType.RUN, 2.78f));
+//        sampleList.add(new LogItem(1701088069, 1701089809, LogType.WALK, 1.8f));
+//        sampleList.add(new LogItem(1700036400, 1700040600, LogType.RUN, 2.78f));
 
         RecyclerView mainRecycler = view.findViewById(R.id.recent_list);
         mainRecycler.setLayoutManager(new LinearLayoutManager(activity));
@@ -59,6 +60,18 @@ public class RecentFragment extends AppFragment {
         });
 
         mainRecycler.setAdapter(adapter);
+
+        Button clearButton = view.findViewById(R.id.recent_clear);
+        clearButton.setOnClickListener(l -> {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Clear recent logs")
+                    .setMessage("This action will delete all recent activity logs. This cannot be undone.")
+                    .setPositiveButton("Confirm", (dialogInterface, i) -> {
+                        LogRoomDatabase.databaseWriteExecutor.execute(() -> logDao.deleteAllLogs());
+                    })
+                    .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel())
+                    .create().show();
+        });
 
         return view;
     }

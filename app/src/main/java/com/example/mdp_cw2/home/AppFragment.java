@@ -7,8 +7,6 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.fragment.app.Fragment;
 
 public abstract class AppFragment extends Fragment {
-    protected String name;
-
     public void onFragmentShown() {
     }
 
@@ -24,9 +22,5 @@ public abstract class AppFragment extends Fragment {
 
         InputMethodManager manager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         manager.hideSoftInputFromWindow((getActivity().getCurrentFocus() == null) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-    }
-
-    public String getFragmentName() {
-        return name;
     }
 }

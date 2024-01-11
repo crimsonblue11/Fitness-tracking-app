@@ -35,6 +35,23 @@ public class FragmentManagerActivity extends AppCompatActivity {
             return;
         }
 
+        // TODO - fix new instance of home fragment when navigating
+//        if(fragment.getClass() == HomeFragment.class) {
+//            for(int i = 0; i < fragmentStack.size(); i++) {
+//                if(fragmentStack.get(i).getClass() == HomeFragment.class) {
+//                    // fragment already exists on the stack, so push it to the front
+//                    AppFragment existingHomeFragment = fragmentStack.get(i);
+//                    fragmentStack.remove(i);
+//                    fragmentStack.addLast(existingHomeFragment);
+//                    transaction.hide(tempFrag);
+//                    tempFrag.onFragmentClosed();
+//                    transaction.add(containerId, existingHomeFragment).show(existingHomeFragment).commit();
+//                    existingHomeFragment.onFragmentShown();
+//                    return;
+//                }
+//            }
+//        }
+
         fragmentStack.addLast(fragment);
         transaction.hide(tempFrag);
         tempFrag.onFragmentClosed();
@@ -42,7 +59,7 @@ public class FragmentManagerActivity extends AppCompatActivity {
         fragment.onFragmentShown();
     }
 
-    public void previousFragment(boolean refreshPrevious) {
+    public void previousFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         AppFragment tempFrag = fragmentStack.getLast();
 

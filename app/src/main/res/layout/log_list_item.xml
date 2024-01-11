@@ -68,12 +68,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/add_annotation_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="50"
             android:gravity="end"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/list_item_add_annotation"
@@ -84,30 +85,25 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/list_item_annotation_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="50"
             android:gravity="end"
             android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/list_item_annotation_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Title" />
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/list_item_annotation_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Description" />
+                android:text="@string/description" />
 
             <ImageView
                 android:id="@+id/list_item_annotation_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 tools:srcCompat="@tools:sample/avatars" />
         </LinearLayout>
     </LinearLayout>

@@ -2,6 +2,7 @@ package com.example.mdp_cw2.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,7 +18,6 @@ public class AddAnnotationActivity extends AppCompatActivity {
     private EditText editDesc;
     private LogDao logDao;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +29,7 @@ public class AddAnnotationActivity extends AppCompatActivity {
         logId = intent.getIntExtra("logIndex", -1);
         if(logId == -1) {
             // TODO - some error handling
+            Log.d("COMP3018", "ID NOT THERE");
             return;
         }
 
@@ -44,6 +45,7 @@ public class AddAnnotationActivity extends AppCompatActivity {
         submit.setOnClickListener(l -> {
             // TODO - figure out image path stuff
             logDao.updateAnnotation(logId, editDesc.toString(), "");
+            finish();
         });
     }
 }

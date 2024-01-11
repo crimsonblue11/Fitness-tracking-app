@@ -2,10 +2,12 @@ package com.example.mdp_cw2.home;
 
 import android.content.Context;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +66,10 @@ public class LogItemViewAdapter extends RecyclerView.Adapter<LogItemViewAdapter.
         TextView typeView;
         TextView distanceAndTimeView;
         Button addAnnotation;
+        TextView descriptionView;
+
+        LinearLayout annotationBox;
+        LinearLayout addAnnotationBox;
 
         LogViewHolder(View itemView) {
             super(itemView);
@@ -74,12 +80,16 @@ public class LogItemViewAdapter extends RecyclerView.Adapter<LogItemViewAdapter.
             typeView = itemView.findViewById(R.id.list_item_type);
             distanceAndTimeView = itemView.findViewById(R.id.list_item_distance_and_time);
             addAnnotation = itemView.findViewById(R.id.list_item_add_annotation);
+            descriptionView = itemView.findViewById(R.id.list_item_annotation_description);
+
+            annotationBox = itemView.findViewById(R.id.list_item_annotation_box);
+            addAnnotationBox = itemView.findViewById(R.id.add_annotation_box);
         }
 
         void bind(final LogItem log) {
             // set views to data
             Calendar cal = Calendar.getInstance(Locale.ENGLISH);
-            cal.setTimeInMillis(log.startTime * 1000L);
+            cal.setTimeInMillis(log.startTime);
             String time = DateFormat.format("hh:mma", cal).toString();
             String date = DateFormat.format("dd/MM/yyyy", cal).toString();
 
@@ -98,7 +108,7 @@ public class LogItemViewAdapter extends RecyclerView.Adapter<LogItemViewAdapter.
                     break;
             }
 
-            int totalTimeSecs = (int) (log.endTime - log.startTime);
+            int totalTimeSecs = (int) (log.endTime - log.startTime) / 1000;
 
             int totalTimeMins = totalTimeSecs / 60;
             int totalTimeHours = totalTimeMins / 60;
@@ -113,7 +123,22 @@ public class LogItemViewAdapter extends RecyclerView.Adapter<LogItemViewAdapter.
 
             distanceAndTimeView.setText(String.format("%skm for %s", log.distance, timeString));
 
-            addAnnotation.setOnClickListener(v -> Toast.makeText(itemView.getContext(), "Not implemented yet :(", Toast.LENGTH_SHORT).show());
+            if(!log.annotationText.isEmpty()) {
+                // annotation - TEXT ONLY
+                Log.d("COMP3018", log.annotationText);
+
+                annotationBox.setVisibility(View.VISIBLE);
+                addAnnotationBox.setVisibility(View.GONE);
+
+                descriptionView.setText(log.annotationText);
+            } else {
+                // NO ANNOTATION
+                annotationBox.setVisibility(View.GONE);
+                addAnnotationBox.setVisibility(View.VISIBLE);
+                addAnnotation.setOnClickListener(v -> Toast.makeText(itemView.getContext(), "Not implemented yet :(", Toast.LENGTH_SHORT).show());
+            }
+
+            // TODO - annotation with image
         }
     }
 }

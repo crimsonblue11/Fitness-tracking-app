@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.example.mdp_cw2.home.FragmentManagerActivity;
 import com.example.mdp_cw2.home.HomeFragment;
-import com.example.mdp_cw2.map.MapFragment;
+import com.example.mdp_cw2.map.MapsFragment;
 import com.example.mdp_cw2.recent.RecentFragment;
 import com.example.mdp_cw2.stats.StatsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -26,7 +26,7 @@ public class MainActivity extends FragmentManagerActivity {
                 switchFragment(new HomeFragment(), R.id.main_frameLayout);
             } else if(id == R.id.bottom_nav_map) {
                 // go to map fragment
-                switchFragment(new MapFragment(), R.id.main_frameLayout);
+                switchFragment(new MapsFragment(), R.id.main_frameLayout);
             } else if(id == R.id.bottom_nav_stats) {
                 // go to navigation fragment
                 switchFragment(new StatsFragment(), R.id.main_frameLayout);
@@ -40,7 +40,7 @@ public class MainActivity extends FragmentManagerActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        previousFragment(false);
+        previousFragment();
         return true;
     }
 }
