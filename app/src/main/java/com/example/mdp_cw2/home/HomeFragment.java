@@ -26,22 +26,24 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.mdp_cw2.MainActivity;
 import com.example.mdp_cw2.R;
+import com.example.mdp_cw2.Util;
 import com.example.mdp_cw2.database.LogItem;
 import com.example.mdp_cw2.database.LogType;
+
+import java.util.Locale;
 
 public class HomeFragment extends AppFragment {
     private TrackingService trackingService;
     private boolean isBound = false;
     private final Handler handler = new Handler();
-    TextView timeView;
-    TextView distanceView;
-    LogType logType = LogType.WALK;
-    Button startButton;
-    Button stopButton;
-    Button addAnnotationButton;
-    LogItem newLogItem;
-    FragmentManagerActivity activity;
+    private TextView timeView;
+    private TextView distanceView;
+    private LogType logType = LogType.WALK;
+    private Button startButton;
+    private Button stopButton;
+    private MainActivity activity;
     private int secondsElapsed = 0;
     ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
             new ActivityResultContracts.RequestMultiplePermissions(), result -> {
@@ -72,7 +74,7 @@ public class HomeFragment extends AppFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        activity = (FragmentManagerActivity) getActivity();
+        activity = (MainActivity) getActivity();
 
         if (activity == null) {
             Log.d("COMP3018", "Activity is null");
@@ -101,15 +103,14 @@ public class HomeFragment extends AppFragment {
                 builder.create().show();
             } else {
                 // TODO - figure out the log ID of the current log
-                newLogItem = new LogItem(System.currentTimeMillis(), logType);
+//                newLogItem = new LogItem(System.currentTimeMillis(), logType);
 
                 Intent intent = new Intent(activity, TrackingService.class);
-                intent.putExtra("LogID", newLogItem.getIndex());
+//                intent.putExtra("LogID", newLogItem.getIndex());
                 activity.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
                 startButton.setVisibility(View.GONE);
                 stopButton.setVisibility(View.VISIBLE);
-                addAnnotationButton.setVisibility(View.VISIBLE);
                 homeType.setVisibility(View.INVISIBLE);
                 homeTypeButtons.setVisibility(View.INVISIBLE);
             }
@@ -125,15 +126,8 @@ public class HomeFragment extends AppFragment {
 
             stopButton.setVisibility(View.GONE);
             startButton.setVisibility(View.VISIBLE);
-            addAnnotationButton.setVisibility(View.GONE);
             homeType.setVisibility(View.VISIBLE);
             homeTypeButtons.setVisibility(View.VISIBLE);
-        });
-
-        addAnnotationButton = view.findViewById(R.id.home_add_annotation);
-        addAnnotationButton.setOnClickListener(l -> {
-            Intent intent = new Intent(activity, AddAnnotationActivity.class);
-            startActivity(intent);
         });
 
         ImageButton walkButton = view.findViewById(R.id.home_type_walk);
@@ -188,23 +182,10 @@ public class HomeFragment extends AppFragment {
 
                 // update timer and UI thread
                 secondsElapsed += 1;
-                timeView.setText(secondsToTimeStamp(secondsElapsed));
+                timeView.setText(Util.secondsToTimeStamp(secondsElapsed));
 
-                distanceView.setText(String.format("%.2f km", trackingService.getTotalDistance()));
+                distanceView.setText(String.format(Locale.ENGLISH, "%.2f km", trackingService.getTotalDistance()));
             }
         }
     };
-
-    private String secondsToTimeStamp(int duration) {
-        int minutes = duration / 60;
-        int seconds = duration - (minutes * 60);
-
-        if (seconds < 10) {
-            // leading 0 for single-digit seconds
-            return minutes + ":0" + seconds;
-        }
-
-        // else no need for leading 0
-        return minutes + ":" + seconds;
-    }
 }

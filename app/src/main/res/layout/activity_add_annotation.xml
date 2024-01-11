@@ -9,19 +9,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Add annotation"
+        android:text="@string/add_annotation"
         android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-<!--    <LinearLayout-->
-<!--        android:id="@+id/add_annotation_rating_layout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content">-->
-
-
-<!--    </LinearLayout>-->
 
     <EditText
         android:id="@+id/add_annotation_edit_description"
@@ -29,33 +21,49 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"
         android:autofillHints="none"
-        android:hint="Description"
+        android:hint="@string/description"
         android:inputType="text"
-        android:minWidth="150dp"
+        android:minWidth="250dp"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/add_annotation_title" />
 
-    <Button
-        android:id="@+id/add_annotation_get_image"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/add_annotation_ratings"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Select image"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_annotation_edit_description" />
+        app:layout_constraintTop_toBottomOf="@id/add_annotation_edit_description">
+
+        <ImageButton
+            android:id="@+id/add_annotation_thumb_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/thumb_up"
+            android:contentDescription="@string/thumbs_up" />
+
+        <ImageButton
+            android:id="@+id/add_annotation_thumb_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/thumb_down"
+            android:contentDescription="@string/thumbs_down" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/add_annotation_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Submit"
+        android:layout_marginTop="32dp"
+        android:text="@string/submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_annotation_get_image" />
+        app:layout_constraintTop_toBottomOf="@id/add_annotation_ratings" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

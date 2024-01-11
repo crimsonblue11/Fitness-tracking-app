@@ -35,4 +35,9 @@
     <string name="zero">0</string>
     <string name="number_of_annotations">Number of annotations</string>
     <string name="view_previous_30_days">View previous 30 days</string>
+    <string name="reminder_title">Reminder Title</string>
+    <string name="thumbs_up">Thumbs up</string>
+    <string name="thumbs_down">Thumbs down</string>
+    <string name="submit">Submit</string>
+    <string name="select_image">Select image</string>
 </resources>

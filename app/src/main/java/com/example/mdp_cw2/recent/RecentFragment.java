@@ -14,45 +14,38 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mdp_cw2.MainActivity;
 import com.example.mdp_cw2.R;
 import com.example.mdp_cw2.database.LogDao;
 import com.example.mdp_cw2.database.LogItem;
 import com.example.mdp_cw2.database.LogRoomDatabase;
 import com.example.mdp_cw2.home.AppFragment;
-import com.example.mdp_cw2.home.FragmentManagerActivity;
 import com.example.mdp_cw2.home.LogItemViewAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecentFragment extends AppFragment {
-    LogRoomDatabase db;
-    LogDao logDao;
+    private LogDao logDao;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recent, container, false);
 
-        FragmentManagerActivity activity = (FragmentManagerActivity) getActivity();
+        MainActivity activity = (MainActivity) getActivity();
 
         if (activity == null) {
             Log.d("COMP3018", "Activity was null");
             return null;
         }
 
-        db = LogRoomDatabase.getDatabase(activity);
-        logDao = db.logDao();
-
-        List<LogItem> sampleList = new ArrayList<>();
-//        sampleList.add(new LogItem(1701088069, 1701089809, LogType.WALK, 1.8f));
-//        sampleList.add(new LogItem(1700036400, 1700040600, LogType.RUN, 2.78f));
+        logDao = LogRoomDatabase.getDatabase(activity).logDao();
 
         RecyclerView mainRecycler = view.findViewById(R.id.recent_list);
         mainRecycler.setLayoutManager(new LinearLayoutManager(activity));
-        LogItemViewAdapter adapter = new LogItemViewAdapter(activity, sampleList);
+        LogItemViewAdapter adapter = new LogItemViewAdapter(activity);
 
-        logDao.getAllLogs().observe(this.getViewLifecycleOwner(), new Observer<List<LogItem>>() {
+        activity.getViewModel().getAllLogs().observe(this.getViewLifecycleOwner(), new Observer<List<LogItem>>() {
             @Override
             public void onChanged(List<LogItem> logItems) {
                 adapter.setData(logItems);

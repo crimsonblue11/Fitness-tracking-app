@@ -1,3 +1,7 @@
+/**
+ * Activity for adding an annotation to a log
+ */
+
 package com.example.mdp_cw2.home;
 
 import android.content.Intent;
@@ -5,18 +9,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.RoomDatabase;
 
 import com.example.mdp_cw2.R;
 import com.example.mdp_cw2.database.LogDao;
+import com.example.mdp_cw2.database.LogLiked;
 import com.example.mdp_cw2.database.LogRoomDatabase;
+import com.example.mdp_cw2.database.LogType;
 
 public class AddAnnotationActivity extends AppCompatActivity {
     private int logId;
     private EditText editDesc;
     private LogDao logDao;
+    private LogLiked logLiked = LogLiked.UNRATED;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,23 +37,23 @@ public class AddAnnotationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         logId = intent.getIntExtra("logIndex", -1);
         if(logId == -1) {
-            // TODO - some error handling
-            Log.d("COMP3018", "ID NOT THERE");
+            Toast.makeText(this, "Oops, something went wrong", Toast.LENGTH_SHORT).show();
             return;
         }
 
         editDesc = findViewById(R.id.add_annotation_edit_description);
-        Button getImage = findViewById(R.id.add_annotation_get_image);
         Button submit = findViewById(R.id.add_annotation_submit);
 
-        getImage.setOnClickListener(l -> {
-            // TODO - implement image path stuff
-            Toast.makeText(this, "Unimplemented :(", Toast.LENGTH_SHORT).show();
-        });
+        ImageButton thumbUpButton = findViewById(R.id.add_annotation_thumb_up);
+        ImageButton thumbDownButton = findViewById(R.id.add_annotation_thumb_down);
+
+        thumbUpButton.setOnClickListener(l -> logLiked = LogLiked.THUMB_UP);
+        thumbDownButton.setOnClickListener(l -> logLiked = LogLiked.THUMB_DOWN);
 
         submit.setOnClickListener(l -> {
-            // TODO - figure out image path stuff
-            logDao.updateAnnotation(logId, editDesc.toString(), "");
+            LogRoomDatabase.databaseWriteExecutor.execute(() -> {
+                logDao.updateAnnotation(logId, editDesc.getText().toString(), logLiked);
+            });
             finish();
         });
     }

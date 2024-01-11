@@ -2,6 +2,8 @@ package com.example.mdp_cw2;
 
 import android.os.Bundle;
 
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.mdp_cw2.home.FragmentManagerActivity;
 import com.example.mdp_cw2.home.HomeFragment;
 import com.example.mdp_cw2.map.MapsFragment;
@@ -10,11 +12,18 @@ import com.example.mdp_cw2.stats.StatsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends FragmentManagerActivity {
+    AppViewModel appViewModel;
+
+    public AppViewModel getViewModel() {
+        return appViewModel;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        appViewModel = new ViewModelProvider(this).get(AppViewModel.class);
 
         showFirstFragment(new HomeFragment(), R.id.main_frameLayout);
 

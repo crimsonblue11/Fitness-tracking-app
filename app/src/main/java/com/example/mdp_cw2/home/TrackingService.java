@@ -17,7 +17,6 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -127,10 +126,7 @@ public class TrackingService extends Service {
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
-//        initialLocation = getLocation();
-
         locationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        
     }
 
     @Override
@@ -140,11 +136,9 @@ public class TrackingService extends Service {
         LogItem newLogItem = new LogItem(startTime, System.currentTimeMillis(), LogType.WALK, initialLocation, currentLocation, locationListener.getTotalDistance());
 
         dao = LogRoomDatabase.getDatabase(getApplicationContext()).logDao();
-        LogRoomDatabase.databaseWriteExecutor.execute(() -> dao.insert(newLogItem));
+        LogRoomDatabase.databaseWriteExecutor.execute(() -> dao.insertLog(newLogItem));
 
         Toast.makeText(this, "Added log!", Toast.LENGTH_SHORT).show();
-
-//        stopForeground(NOTIFICATION_ID);
 
         super.onDestroy();
     }

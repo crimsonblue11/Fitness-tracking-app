@@ -1,3 +1,7 @@
+/**
+ * ROOM Database class.
+ */
+
 package com.example.mdp_cw2.database;
 
 import android.content.Context;
@@ -11,11 +15,14 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {LogItem.class, LBRItem.class}, version = 4, exportSchema = false)
+@Database(entities = {LogItem.class, LBRItem.class}, version = 5, exportSchema = false)
 public abstract class LogRoomDatabase extends RoomDatabase {
+    /*
+    Most of the code in this file is from Lab 06 - Room Database Storage
+     */
+
     public abstract LogDao logDao();
     private static volatile LogRoomDatabase instance;
-
     private static final int threadCount = 4;
     public static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(threadCount);
 
@@ -41,15 +48,9 @@ public abstract class LogRoomDatabase extends RoomDatabase {
             databaseWriteExecutor.execute(() -> {
                 LogDao dao = instance.logDao();
                 dao.deleteAllLogs();
-                
-//                LogItem log1 = new LogItem(1701088069, 1701089809, LogType.WALK, new Location(), new Pair<>(0.0, 0.0));
-//                LogItem log2 = new LogItem(1700036400, 1700040600, LogType.RUN, new Pair<>(0.0, 0.0), new Pair<>(0.0, 0.0));
-
-//                dao.insert(log1);
-//                dao.insert(log2);
 
                 LBRItem lbr1 = new LBRItem("Test", 53.074330, -2.519859, 100f);
-                dao.insert(lbr1);
+                dao.insertLBR(lbr1);
             });
         }
     };

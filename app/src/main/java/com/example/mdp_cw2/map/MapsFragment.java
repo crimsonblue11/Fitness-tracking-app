@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.mdp_cw2.MainActivity;
 import com.example.mdp_cw2.R;
 import com.example.mdp_cw2.database.LBRItem;
 import com.example.mdp_cw2.database.LogDao;
@@ -24,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.internal.IMapFragmentDelegate;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -37,11 +39,10 @@ public class MapsFragment extends AppFragment {
     private boolean isAddingLBR = false;
     private Button addLBRButton;
     final ArrayList<LBRItem> LBRs = new ArrayList<>();
-
     private CircleOptions newLBR;
+    private GoogleMap googleMap;
 
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
-
         /**
          * Manipulates the map once available.
          * This callback is triggered when the map is ready to be used.
@@ -52,36 +53,8 @@ public class MapsFragment extends AppFragment {
          * user has installed Google Play services and returned to the app.
          */
         @Override
-        public void onMapReady(GoogleMap googleMap) {
-            for (LBRItem lbr : LBRs) {
-                googleMap.addCircle(new CircleOptions()
-                        .center(new LatLng(lbr.latitude, lbr.longitude))
-                        .radius(lbr.radius)
-                        .clickable(true)
-                        .fillColor(R.color.black)
-                        .visible(true)
-                );
-            }
-
-            Log.d("COMP3018", "" + LBRs.size());
-            if (!LBRs.isEmpty()) {
-                LatLng firstLBR = new LatLng(LBRs.get(0).latitude, LBRs.get(0).longitude);
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(firstLBR));
-            }
-
-            googleMap.setOnMapClickListener(l -> {
-                // TODO - better option?
-                googleMap.clear();
-
-                newLBR = new CircleOptions()
-                        .center(new LatLng(l.latitude, l.longitude))
-                        .radius(100)
-                        .clickable(true)
-                        .fillColor(R.color.black);
-                googleMap.addCircle(newLBR);
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(l.latitude, l.longitude)));
-                isAddingLBR = true;
-            });
+        public void onMapReady(@NonNull GoogleMap googleMap) {
+            MapsFragment.this.googleMap = googleMap;
 
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
@@ -107,20 +80,48 @@ public class MapsFragment extends AppFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(callback);
+        }
+
         addLBRButton = view.findViewById(R.id.map_add_reminder);
         addLBRButton.setOnClickListener(l -> {
 
         });
 
-        dao = LogRoomDatabase.getDatabase(getContext()).logDao();
-        LogRoomDatabase.databaseWriteExecutor.execute(() -> {
-            LBRs.addAll(dao.getAllLBRs());
-            Log.d("COMP3018", "Fetched");
-        });
+        MainActivity activity = (MainActivity) getActivity();
+        activity.getViewModel().getLBRs().observe(activity, lbrItems -> {
+            LBRs.clear();
+            LBRs.addAll(lbrItems);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(callback);
-        }
+            for (LBRItem lbr : LBRs) {
+                googleMap.addCircle(new CircleOptions()
+                        .center(new LatLng(lbr.latitude, lbr.longitude))
+                        .radius(lbr.radius)
+                        .clickable(true)
+                        .fillColor(R.color.black)
+                        .visible(true)
+                );
+            }
+
+            if (!LBRs.isEmpty()) {
+                LatLng firstLBR = new LatLng(LBRs.get(0).latitude, LBRs.get(0).longitude);
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(firstLBR));
+            }
+
+            googleMap.setOnMapClickListener(l -> {
+                // TODO - better option?
+                newLBR.visible(false);
+//                newLBR = new CircleOptions()
+//                        .center(new LatLng(l.latitude, l.longitude))
+//                        .radius(100)
+//                        .clickable(true)
+//                        .fillColor(R.color.black);
+//                googleMap.addCircle(newLBR);
+//                googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(l.latitude, l.longitude)));
+//                isAddingLBR = true;
+            });
+        });
     }
 }

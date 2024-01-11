@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp">
@@ -85,27 +84,36 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/list_item_annotation_box"
+            android:id="@+id/add_annotation_annotation_box"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="50"
-            android:gravity="end"
-            android:orientation="vertical"
-            android:visibility="visible">
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/list_item_thumb_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="@string/thumbs_down"
+                android:src="@drawable/thumb_down"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/list_item_thumb_up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="@string/thumbs_up"
+                android:src="@drawable/thumb_up"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/list_item_annotation_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxWidth="100dp"
                 android:text="@string/description" />
-
-            <ImageView
-                android:id="@+id/list_item_annotation_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                tools:srcCompat="@tools:sample/avatars" />
         </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
