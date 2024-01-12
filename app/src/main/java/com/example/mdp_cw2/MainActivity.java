@@ -1,3 +1,8 @@
+/**
+ * Main Activity class.
+ * Primarily handles notification channels and some permission checking.
+ */
+
 package com.example.mdp_cw2;
 
 import android.Manifest;
@@ -23,8 +28,27 @@ import com.example.mdp_cw2.stats.StatsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends FragmentManagerActivity {
+    /**
+     * Unique notification channel ID for tracking notifications.
+     * These are sent by the TrackingService class.
+     *
+     * @see com.example.mdp_cw2.home.TrackingService
+     */
     public static final String TRACKING_CHANNEL_ID = "TrackingChannel";
+
+    /**
+     * Unique notification channel ID for reminder notifications.
+     * These are sent by the GeofenceBroadcastReceiver class.
+     *
+     * @see com.example.mdp_cw2.map.GeofenceBroadcastReceiver
+     */
     public static final String REMINDER_CHANNEL_ID = "LocationReminderChannel";
+
+    /**
+     * ViewModel for this activity.
+     *
+     * @see AppViewModel
+     */
     private AppViewModel appViewModel;
 
     public ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
@@ -46,6 +70,11 @@ public class MainActivity extends FragmentManagerActivity {
             }
     );
 
+    /**
+     * Getter method for ViewModel.
+     *
+     * @return Instance of AppViewModel
+     */
     public AppViewModel getViewModel() {
         return appViewModel;
     }
@@ -55,8 +84,11 @@ public class MainActivity extends FragmentManagerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        createNotificationChannelForReminders();
-        createTrackingNotificationChannel();
+        // create notification channel for reminder notifications
+        createNotificationChannel("Location Reminder service", "Used for sending location-based reminder notifications", REMINDER_CHANNEL_ID);
+
+        // create notification channel for tracking notifications
+        createNotificationChannel("Tracking service", "Used for tracking user to create a movement log", TRACKING_CHANNEL_ID);
 
         appViewModel = new ViewModelProvider(this).get(AppViewModel.class);
 
@@ -88,34 +120,39 @@ public class MainActivity extends FragmentManagerActivity {
         return true;
     }
 
-    private void createNotificationChannelForReminders() {
+    /**
+     * Method to create a notification channel. This is done in the main activity so that child
+     * classes that want to send notifications don't have to worry about creating them.
+     *
+     * @param name      Name of the channel
+     * @param desc      Description of the channel
+     * @param channelId Unique channel ID string
+     */
+    private void createNotificationChannel(CharSequence name, String desc, String channelId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Location Reminder service";
-            String desc = "Used for sending location-based reminder notifications";
             int importance = NotificationManager.IMPORTANCE_LOW;
-            NotificationChannel channel = new NotificationChannel(REMINDER_CHANNEL_ID, name, importance);
+            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
             channel.setDescription(desc);
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
         }
     }
 
-    private void createTrackingNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Tracking service";
-            String desc = "Used for tracking user to create a movement log";
-            int importance = NotificationManager.IMPORTANCE_LOW;
-            NotificationChannel channel = new NotificationChannel(TRACKING_CHANNEL_ID, name, importance);
-            channel.setDescription(desc);
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
-    }
-
+    /**
+     * Method to check location permissions. Specifically checks ACCESS_FINE_LOCATION and
+     * ACCESS_COURSE_LOCATION.
+     *
+     * @return True if both are granted, false otherwise.
+     */
     public boolean checkLocationAccess() {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
+    /**
+     * Method to request location access via locationPermissionRequest.
+     *
+     * @see #locationPermissionRequest
+     */
     public void requestLocationAccess() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Location permissions")

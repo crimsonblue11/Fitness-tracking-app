@@ -1,6 +1,16 @@
+/**
+ * Utility class.
+ */
+
 package com.example.mdp_cw2;
 
 public class Util {
+
+    /**
+     * Static method to convert duration in seconds to a timestamp, e.g. "4:34" (4 minutes, 34 secs)
+     * @param duration Duration in seconds
+     * @return Converted timestamp
+     */
     public static String secondsToTimeStamp(int duration) {
         int minutes = duration / 60;
         int seconds = duration - (minutes * 60);
