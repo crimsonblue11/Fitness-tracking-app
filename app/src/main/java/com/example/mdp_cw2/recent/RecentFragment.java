@@ -1,3 +1,7 @@
+/**
+ * Fragment showing recent logs screen.
+ */
+
 package com.example.mdp_cw2.recent;
 
 import android.os.Bundle;
@@ -24,6 +28,9 @@ import com.example.mdp_cw2.home.AppFragment;
 import java.util.List;
 
 public class RecentFragment extends AppFragment {
+    /**
+     * DAO object, used to access the database.
+     */
     private LogDao logDao;
 
     @Nullable
@@ -32,18 +39,20 @@ public class RecentFragment extends AppFragment {
         View view = inflater.inflate(R.layout.fragment_recent, container, false);
 
         MainActivity activity = (MainActivity) getActivity();
-
         if (activity == null) {
             Log.d("COMP3018", "Activity was null");
             return null;
         }
 
+        // get dao
         logDao = LogRoomDatabase.getDatabase(activity).logDao();
 
+        // get recyclerview and create adapter
         RecyclerView mainRecycler = view.findViewById(R.id.recent_list);
         mainRecycler.setLayoutManager(new LinearLayoutManager(activity));
         LogItemViewAdapter adapter = new LogItemViewAdapter(activity);
 
+        // observe LiveData from ViewModel and set adapter to it
         activity.getViewModel().getAllLogs().observe(this.getViewLifecycleOwner(), new Observer<List<LogItem>>() {
             @Override
             public void onChanged(List<LogItem> logItems) {
@@ -53,17 +62,14 @@ public class RecentFragment extends AppFragment {
 
         mainRecycler.setAdapter(adapter);
 
+        // button to delete all logs
         Button clearButton = view.findViewById(R.id.recent_clear);
-        clearButton.setOnClickListener(l -> {
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Clear recent logs")
-                    .setMessage("This action will delete all recent activity logs. This cannot be undone.")
-                    .setPositiveButton("Confirm", (dialogInterface, i) -> {
-                        LogRoomDatabase.databaseWriteExecutor.execute(() -> logDao.deleteAllLogs());
-                    })
-                    .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel())
-                    .create().show();
-        });
+        clearButton.setOnClickListener(l -> new AlertDialog.Builder(getActivity())
+                .setTitle("Clear recent logs")
+                .setMessage("This action will delete all recent activity logs. This cannot be undone.")
+                .setPositiveButton("Confirm", (dialogInterface, i) -> LogRoomDatabase.databaseWriteExecutor.execute(() -> logDao.deleteAllLogs()))
+                .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel())
+                .create().show());
 
         return view;
     }

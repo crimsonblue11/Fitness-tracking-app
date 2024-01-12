@@ -31,9 +31,20 @@ import java.util.List;
 import java.util.Locale;
 
 public class LogItemViewAdapter extends RecyclerView.Adapter<LogItemViewAdapter.LogViewHolder> {
+    /**
+     * ArrayList containing log items.
+     */
     private List<LogItem> data = new ArrayList<>();
+
+    /**
+     * LayoutInflater object to inflate each object in the adapter.
+     */
     private final LayoutInflater layoutInflater;
 
+    /**
+     * Constructor method. Fetches layout inflater via context.
+     * @param context App context, needed to inflate each log in the adapter.
+     */
     public LogItemViewAdapter(Context context) {
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -67,17 +78,64 @@ public class LogItemViewAdapter extends RecyclerView.Adapter<LogItemViewAdapter.
     }
 
     static class LogViewHolder extends RecyclerView.ViewHolder {
+        /**
+         * View showing time the log was started at.
+         */
         private final TextView timeView;
+
+        /**
+         * View showing the date of the log.
+         */
         private final TextView dateView;
+
+        /**
+         * View showing the LogType of the log.
+         */
         private final TextView typeView;
+
+        /**
+         * View showing the total time and distance of the log.
+         */
         private final TextView distanceAndTimeView;
+
+        /**
+         * Button to add annotation to the log.
+         */
         private final Button addAnnotation;
+
+        /**
+         * View showing the annotated description of the log (if available).
+         */
         private final TextView descriptionView;
-        private final LinearLayout addAnnotationBox;
+
+        /**
+         * Layout containing button to add annotation.
+         * Disabled when an annotation has already been added.
+         */
+        private final LinearLayout addAnnotationLayout;
+
+        /**
+         * Layout containing annotation data.
+         * Disabled if no annotation has been added.
+         */
         private final LinearLayout annotationBox;
+
+        /**
+         * ImageView containing a thumb up icon.
+         * Displayed only when the annotation has been rated "thumbs up".
+         */
         private final ImageView thumbUp;
+
+        /**
+         * ImageView containing a thumb down icon.
+         * Displayed only when the annotation has been rated "thumbs down".
+         */
         private final ImageView thumbDown;
 
+        /**
+         * Constructor method.
+         * @param itemView Parent ItemView object
+         */
         public LogViewHolder(View itemView) {
             super(itemView);
 
@@ -88,7 +146,7 @@ public class LogItemViewAdapter extends RecyclerView.Adapter<LogItemViewAdapter.
             distanceAndTimeView = itemView.findViewById(R.id.list_item_distance_and_time);
             addAnnotation = itemView.findViewById(R.id.list_item_add_annotation);
             descriptionView = itemView.findViewById(R.id.list_item_annotation_description);
-            addAnnotationBox = itemView.findViewById(R.id.add_annotation_box);
+            addAnnotationLayout = itemView.findViewById(R.id.add_annotation_box);
             annotationBox = itemView.findViewById(R.id.add_annotation_annotation_box);
             thumbUp = itemView.findViewById(R.id.list_item_thumb_up);
             thumbDown = itemView.findViewById(R.id.list_item_thumb_down);
@@ -116,6 +174,7 @@ public class LogItemViewAdapter extends RecyclerView.Adapter<LogItemViewAdapter.
                     break;
             }
 
+            // timestamps are in ms, so divide by 1000
             int totalTimeSecs = (int) (log.endTime - log.startTime) / 1000;
 
             int totalTimeMins = totalTimeSecs / 60;
@@ -132,9 +191,9 @@ public class LogItemViewAdapter extends RecyclerView.Adapter<LogItemViewAdapter.
             distanceAndTimeView.setText(String.format("%skm for %s", log.distance, timeString));
 
             if(!log.annotationText.isEmpty()) {
-                // ANNOTATION
+                // annotation is present, so show annotation data
                 annotationBox.setVisibility(View.VISIBLE);
-                addAnnotationBox.setVisibility(View.GONE);
+                addAnnotationLayout.setVisibility(View.GONE);
 
                 descriptionView.setText(log.annotationText);
 
@@ -149,9 +208,9 @@ public class LogItemViewAdapter extends RecyclerView.Adapter<LogItemViewAdapter.
                     thumbDown.setVisibility(View.GONE);
                 }
             } else {
-                // NO ANNOTATION
+                // no annotation, so show annotation button
                 annotationBox.setVisibility(View.GONE);
-                addAnnotationBox.setVisibility(View.VISIBLE);
+                addAnnotationLayout.setVisibility(View.VISIBLE);
 
                 addAnnotation.setOnClickListener(v -> {
                     Intent intent = new Intent(v.getContext(), AddAnnotationActivity.class);
