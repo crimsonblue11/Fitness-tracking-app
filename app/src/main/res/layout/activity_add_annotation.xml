@@ -23,6 +23,7 @@
         android:autofillHints="none"
         android:hint="@string/description"
         android:inputType="text"
+        android:maxWidth="250dp"
         android:minWidth="250dp"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,15 +45,19 @@
             android:id="@+id/add_annotation_thumb_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="?attr/colorSecondary"
+            android:contentDescription="@string/thumbs_up"
             android:src="@drawable/thumb_up"
-            android:contentDescription="@string/thumbs_up" />
+            app:tint="@color/white" />
 
         <ImageButton
             android:id="@+id/add_annotation_thumb_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="?attr/colorSecondary"
+            android:contentDescription="@string/thumbs_down"
             android:src="@drawable/thumb_down"
-            android:contentDescription="@string/thumbs_down" />
+            app:tint="@color/white" />
     </LinearLayout>
 
     <Button

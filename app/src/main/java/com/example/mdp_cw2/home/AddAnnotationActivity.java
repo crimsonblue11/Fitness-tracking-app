@@ -22,9 +22,15 @@ import com.example.mdp_cw2.database.LogRoomDatabase;
 import com.example.mdp_cw2.database.LogType;
 
 public class AddAnnotationActivity extends AppCompatActivity {
+    /**
+     * Database ID for the log item being changed.
+     */
     private int logId;
-    private EditText editDesc;
-    private LogDao logDao;
+    /**
+     * "Liked" state of the annotation.
+     * Set to THUMB_UP if the thumb up button is clicked.
+     * Set to THUMB_DOWN if the thumb down button is clicked.
+     */
     private LogLiked logLiked = LogLiked.UNRATED;
 
     @Override
@@ -32,16 +38,16 @@ public class AddAnnotationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_annotation);
 
-        logDao = LogRoomDatabase.getDatabase(getApplicationContext()).logDao();
+        LogDao logDao = LogRoomDatabase.getDatabase(getApplicationContext()).logDao();
 
         Intent intent = getIntent();
         logId = intent.getIntExtra("logIndex", -1);
-        if(logId == -1) {
+        if (logId == -1) {
             Toast.makeText(this, "Oops, something went wrong", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        editDesc = findViewById(R.id.add_annotation_edit_description);
+        EditText editDesc = findViewById(R.id.add_annotation_edit_description);
         Button submit = findViewById(R.id.add_annotation_submit);
 
         ImageButton thumbUpButton = findViewById(R.id.add_annotation_thumb_up);
@@ -51,9 +57,8 @@ public class AddAnnotationActivity extends AppCompatActivity {
         thumbDownButton.setOnClickListener(l -> logLiked = LogLiked.THUMB_DOWN);
 
         submit.setOnClickListener(l -> {
-            LogRoomDatabase.databaseWriteExecutor.execute(() -> {
-                logDao.updateAnnotation(logId, editDesc.getText().toString(), logLiked);
-            });
+            // submit new annotation to db and finish activity
+            LogRoomDatabase.databaseWriteExecutor.execute(() -> logDao.updateAnnotation(logId, editDesc.getText().toString(), logLiked));
             finish();
         });
     }

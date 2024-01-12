@@ -20,7 +20,6 @@ import com.example.mdp_cw2.database.LogDao;
 import com.example.mdp_cw2.database.LogItem;
 import com.example.mdp_cw2.database.LogRoomDatabase;
 import com.example.mdp_cw2.home.AppFragment;
-import com.example.mdp_cw2.home.LogItemViewAdapter;
 
 import java.util.List;
 

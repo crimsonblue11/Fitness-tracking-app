@@ -52,6 +52,9 @@ public interface LogDao {
     @Query("DELETE FROM log_table")
     void deleteAllLogs();
 
+    @Query("DELETE FROM lbr_table")
+    void deleteAllLBRs();
+
     /**
      * Method to update the annotation data of a single log.
      * @param id ID of the row to change.

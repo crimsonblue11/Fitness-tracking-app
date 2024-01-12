@@ -1,26 +1,23 @@
-package com.example.mdp_cw2.home;
+/**
+ * Custom fragment subclass.
+ */
 
-import android.app.Activity;
-import android.content.Context;
-import android.view.inputmethod.InputMethodManager;
+package com.example.mdp_cw2.home;
 
 import androidx.fragment.app.Fragment;
 
 public abstract class AppFragment extends Fragment {
+    /**
+     * Method called when fragment is shown on screen.
+     * Does nothing by default - override to implement custom functionality.
+     */
     public void onFragmentShown() {
     }
 
+    /**
+     * Method called when fragment is closed.
+     * Does nothing by default - override to implement custom functionality.
+     */
     public void onFragmentClosed() {
-        closeKeyboard();
-    }
-
-    public void closeKeyboard() {
-        Activity activity = getActivity();
-        if (activity == null) {
-            return;
-        }
-
-        InputMethodManager manager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow((getActivity().getCurrentFocus() == null) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

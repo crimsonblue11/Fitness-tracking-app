@@ -33,7 +33,7 @@ public class LBRItem {
     /**
      * Radius of the circle
      */
-    public float radius;
+    public double radius;
 
     /**
      * Default constructor method
@@ -42,7 +42,7 @@ public class LBRItem {
      * @param longitude Longitude of the centre of the circle
      * @param radius Radius of the circle
      */
-    public LBRItem(String title, double latitude, double longitude, float radius) {
+    public LBRItem(String title, double latitude, double longitude, double radius) {
         this.title = title;
         this.latitude = latitude;
         this.longitude = longitude;

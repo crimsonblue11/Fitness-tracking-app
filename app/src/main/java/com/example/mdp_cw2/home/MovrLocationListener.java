@@ -1,3 +1,7 @@
+/**
+ * LocationListener subclass.
+ */
+
 package com.example.mdp_cw2.home;
 
 import android.location.Location;
@@ -8,23 +12,35 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 public class MovrLocationListener implements LocationListener {
+    /**
+     * Last known location of the user.
+     */
     private Location lastLocation;
+
+    /**
+     * Total distance elapsed since beginning tracking.
+     */
     private float totalDistance = 0;
 
+    /**
+     * Getter method for total distance.
+     *
+     * @return Value of totalDistance variable.
+     * @see #totalDistance
+     */
     public float getTotalDistance() {
         return totalDistance;
     }
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        Log.d("COMP3018", location.getLatitude() + ", " + location.getLongitude());
-
+        // if no location has been set yet, don't update distance
         if (lastLocation != null) {
-            // edge case for initial location, where last location won't be set yet
             totalDistance += location.distanceTo(lastLocation) / 1000;
         }
+
+        // set last known location
         lastLocation = location;
-//        Log.d("COMP3018", String.valueOf(totalDistance));
     }
 
     @Override

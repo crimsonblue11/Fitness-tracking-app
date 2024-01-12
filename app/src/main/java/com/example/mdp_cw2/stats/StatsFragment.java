@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.mdp_cw2.AppViewModel;
 import com.example.mdp_cw2.MainActivity;
@@ -25,7 +26,6 @@ public class StatsFragment extends AppFragment {
     private TextView averageTime;
     private TextView numLBRs;
     private TextView numAnnotations;
-    private Button viewPrev;
 
     @Nullable
     @Override
@@ -46,7 +46,6 @@ public class StatsFragment extends AppFragment {
         averageTime = view.findViewById(R.id.stats_avg_time);
         numLBRs = view.findViewById(R.id.stats_num_lbrs);
         numAnnotations = view.findViewById(R.id.stats_num_annotations);
-        viewPrev = view.findViewById(R.id.stats_view_prev);
 
         viewModel.getAllLogs().observe(activity, logItems -> {
             int totalD = 0;

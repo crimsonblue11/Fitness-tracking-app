@@ -1,9 +1,14 @@
-package com.example.mdp_cw2.home;
+/**
+ * RecyclerView adapter for Recent fragment.
+ *
+ * @see com.example.mdp_cw2.recent.RecentFragment
+ */
+
+package com.example.mdp_cw2.recent;
 
 import android.content.Context;
 import android.content.Intent;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mdp_cw2.R;
 import com.example.mdp_cw2.database.LogItem;
 import com.example.mdp_cw2.database.LogLiked;
+import com.example.mdp_cw2.home.AddAnnotationActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;

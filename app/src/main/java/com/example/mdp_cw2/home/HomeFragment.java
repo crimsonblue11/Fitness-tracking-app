@@ -1,3 +1,8 @@
+/**
+ * Home screen fragment.
+ * Handles tracking activities.
+ */
+
 package com.example.mdp_cw2.home;
 
 import android.Manifest;
@@ -35,34 +40,56 @@ import com.example.mdp_cw2.database.LogType;
 import java.util.Locale;
 
 public class HomeFragment extends AppFragment {
+    /**
+     * Tracking service instance.
+     */
     private TrackingService trackingService;
-    private boolean isBound = false;
-    private final Handler handler = new Handler();
-    private TextView timeView;
-    private TextView distanceView;
-    private LogType logType = LogType.WALK;
-    private Button startButton;
-    private Button stopButton;
-    private MainActivity activity;
-    private int secondsElapsed = 0;
-    ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
-            new ActivityResultContracts.RequestMultiplePermissions(), result -> {
-                Boolean fineLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
-                Boolean courseLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false);
 
-                // TODO - something with this
-                if (fineLocationGranted != null && fineLocationGranted) {
-                    // precise location access granted
-                    Log.d("COMP3018", "Fine permission granted");
-                } else if (courseLocationGranted != null && courseLocationGranted) {
-                    // only approx location granted
-                    Log.d("COMP3018", "Approx permission granted");
-                } else {
-                    // no location granted
-                    Log.d("COMP3018", "No permission granted");
-                }
-            }
-    );
+    /**
+     * Boolean tracking the status of the bound trackingService.
+     */
+    private boolean isBound = false;
+
+    /**
+     * Handler object to handle bound service looping.
+     */
+    private final Handler handler = new Handler();
+
+    /**
+     * View to track elapsed time in current activity.
+     */
+    private TextView timeView;
+
+    /**
+     * View to tracking total distance in current activity.
+     */
+    private TextView distanceView;
+
+    /**
+     * LogType of the current activity.
+     * Set to LogType.WALK by default.
+     */
+    private LogType logType = LogType.WALK;
+
+    /**
+     * Button to start activity tracking service.
+     */
+    private Button startButton;
+
+    /**
+     * Button to stop activity tracking service.
+     */
+    private Button stopButton;
+
+    /**
+     * Reference to parent activity.
+     */
+    private MainActivity activity;
+
+    /**
+     * Number of seconds elapsed in the current activity.
+     */
+    private int secondsElapsed = 0;
 
     @Nullable
     @Override
@@ -75,7 +102,6 @@ public class HomeFragment extends AppFragment {
         super.onViewCreated(view, savedInstanceState);
 
         activity = (MainActivity) getActivity();
-
         if (activity == null) {
             Log.d("COMP3018", "Activity is null");
             return;
@@ -89,24 +115,15 @@ public class HomeFragment extends AppFragment {
 
         startButton = view.findViewById(R.id.home_start);
         startButton.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("Location permissions")
-                        .setMessage("Movr needs access to your device's precise location to track and log your exercises. Without this permission, this feature will be disabled and will not work correctly.");
-                builder.setPositiveButton("Ok", (dialogInterface, i) -> {
-                    locationPermissionRequest.launch(new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                    });
-                });
-                builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
-                builder.create().show();
+            // check location first
+            if (!activity.checkLocationAccess()) {
+                // if location access isn't granted, try requesting it
+                activity.requestLocationAccess();
             } else {
-                // TODO - figure out the log ID of the current log
-//                newLogItem = new LogItem(System.currentTimeMillis(), logType);
-
+                // else location access must be granted
+                // start tracking service and bind it to the activity
                 Intent intent = new Intent(activity, TrackingService.class);
-//                intent.putExtra("LogID", newLogItem.getIndex());
+                intent.putExtra("logType", logType.toString());
                 activity.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
                 startButton.setVisibility(View.GONE);
@@ -118,6 +135,7 @@ public class HomeFragment extends AppFragment {
 
         stopButton = view.findViewById(R.id.home_stop);
         stopButton.setOnClickListener(l -> {
+            // stop tracking service by unbinding from activity
             activity.unbindService(serviceConnection);
             isBound = false;
             secondsElapsed = 0;
@@ -174,16 +192,23 @@ public class HomeFragment extends AppFragment {
     };
 
     private final Runnable updateRunnable = new Runnable() {
+        /**
+         * Static constant representing the delay between runs of the handler.
+         * Set to 1000 ms (1 second)
+         */
+        private final static int DELAY_MS = 1000;
+
         @Override
         public void run() {
             if (isBound) {
-                // run every sec
-                handler.postDelayed(this, 1000);
+                // run every DELAY_MS
+                handler.postDelayed(this, DELAY_MS);
 
-                // update timer and UI thread
+                // update timer
                 secondsElapsed += 1;
                 timeView.setText(Util.secondsToTimeStamp(secondsElapsed));
 
+                // update distance
                 distanceView.setText(String.format(Locale.ENGLISH, "%.2f km", trackingService.getTotalDistance()));
             }
         }
