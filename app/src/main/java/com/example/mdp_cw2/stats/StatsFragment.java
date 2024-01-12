@@ -1,3 +1,7 @@
+/**
+ * Fragment showing statistics page.
+ */
+
 package com.example.mdp_cw2.stats;
 
 import android.os.Bundle;
@@ -19,12 +23,34 @@ import com.example.mdp_cw2.database.LogItem;
 import com.example.mdp_cw2.home.AppFragment;
 
 public class StatsFragment extends AppFragment {
-    private MainActivity activity;
+    /**
+     * View showing the total distance tracked in the last 30 days.
+     */
     private TextView totalDistance;
+
+    /**
+     * View showing the total time spent tracking activities in the last 30 days.
+     */
     private TextView totalTime;
+
+    /**
+     * View showing the average distance per log from the last 30 days.
+     */
     private TextView averageDistance;
+
+    /**
+     * View showing the average time per log from the last 30 days.
+     */
     private TextView averageTime;
+
+    /**
+     * View showing the total number of location-based reminders.
+     */
     private TextView numLBRs;
+
+    /**
+     * View showing the total number of annotations on logs from the last 30 days.
+     */
     private TextView numAnnotations;
 
     @Nullable
@@ -37,9 +63,10 @@ public class StatsFragment extends AppFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        activity = (MainActivity) getActivity();
+        MainActivity activity = (MainActivity) getActivity();
         AppViewModel viewModel = activity.getViewModel();
 
+        // retrieve everything
         totalDistance = view.findViewById(R.id.stats_total_distance);
         totalTime = view.findViewById(R.id.stats_total_time);
         averageDistance = view.findViewById(R.id.stats_avg_distance);
@@ -47,6 +74,7 @@ public class StatsFragment extends AppFragment {
         numLBRs = view.findViewById(R.id.stats_num_lbrs);
         numAnnotations = view.findViewById(R.id.stats_num_annotations);
 
+        // observe LiveData so everything is updated automatically
         viewModel.getAllLogs().observe(activity, logItems -> {
             int totalD = 0;
             int totalT = 0;
@@ -64,6 +92,7 @@ public class StatsFragment extends AppFragment {
             int avgD = 0;
             int avgT = 0;
             if(logItems.size() != 0) {
+                // to avoid divide by zero error
                 avgD = totalD / logItems.size();
                 avgT = totalT / logItems.size();
             }
