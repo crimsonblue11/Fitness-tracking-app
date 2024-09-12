@@ -6,4 +6,4 @@ This app was written for my MDP (Mobile Development) final coursework as part of
 
 This app was written in Java using Android Studio, with layouts written in XML.
 
-Created and maintained by Medusa Dempsey.
+Created and maintained by Medusa Dempsey. :)
